@@ -1,0 +1,5 @@
+*{
+    outline: transparent;
+    background-color: ${background};
+    font-size: 16px;
+}

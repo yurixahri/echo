@@ -1,0 +1,23 @@
+*{
+    color: ${foreground};
+    background-color: transparent
+}
+
+QPushButton {
+    border: none;
+    padding: 0px;
+}
+
+QWidget#QCollapseWidget{
+    background-color: ${popover};
+    border-radius: 3px;
+}
+QWidget#QCollapseWidget #title{
+    margin-bottom: 2px;
+}
+
+QLineEdit {
+    background-color: ${input};
+    border: 2px solid ${ring};
+    border-radius: 10px;
+}
