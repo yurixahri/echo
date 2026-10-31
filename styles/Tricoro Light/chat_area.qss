@@ -1,0 +1,293 @@
+*{
+	background-color: transparent;
+}
+
+QWidget#chat_area {
+    background-color: ${muted};
+    border-radius: 5px;
+}
+
+QWidget#chat_header {
+    border-bottom: 1px solid ${border};
+    background-color: transparent;
+}
+
+QLabel#chat_title {
+    font-size: 14px;
+    font-weight: bold;
+    color: ${foreground};
+}
+
+QPushButton#chat_close_btn {
+    border: none;
+    border-radius: 4px;
+    padding: 2px;
+}
+
+QPushButton#chat_close_btn:hover {
+    background-color: ${input};
+}
+
+QScrollArea#chat_scroll_area {
+    border: none;
+    background-color: transparent;
+}
+
+QWidget#chat_messages_container {
+    background-color: transparent;
+}
+
+QPushButton#new_messages_bar {
+    background-color: ${popover};
+    color: ${foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0px 6px 4px 6px;
+}
+
+QPushButton#new_messages_bar:hover {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QWidget#chat_input_container {
+    border-top: 1px solid ${border};
+}
+
+QWidget#chat_preview_container {
+    border-bottom: 1px solid ${border};
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+}
+
+QLabel#chat_preview_title {
+    font-size: 11px;
+    font-weight: bold;
+    color: ${primary};
+}
+
+QScrollArea#chat_preview_scroll {
+    border: 1px solid ${border};
+    border-radius: 4px;
+    background-color: ${card};
+}
+
+QLabel#chat_preview_content {
+    padding: 6px;
+    font-size: 13px;
+    color: ${foreground};
+}
+
+QWidget#chat_pending_bar {
+    background-color: ${card};
+    border: 1px dashed ${ring};
+    border-radius: 4px;
+}
+
+QLabel#chat_pending_name {
+    font-size: 12px;
+    color: ${foreground};
+    font-weight: bold;
+}
+
+QPushButton#chat_pending_clear_btn {
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+QPushButton#chat_pending_clear_btn:hover {
+    background-color: ${input};
+}
+
+QPushButton#chat_format_btn {
+    background-color: transparent;
+    border: none;
+    border-radius: 3px;
+    padding: 2px;
+}
+
+QPushButton#chat_format_btn:hover {
+    background-color: ${input};
+}
+
+QTextEdit#chat_input {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: ${foreground};
+    font-size: 13px;
+}
+
+QTextEdit#chat_input:focus {
+    border: 1px solid ${ring};
+}
+
+QWidget#chat_group_widget {
+    margin: 4px 0px;
+}
+
+QWidget#chat_date_separator {
+    margin: 8px 0px 4px 0px;
+}
+
+QFrame#chat_date_line {
+    background-color: ${border};
+    max-height: 1px;
+}
+
+QLabel#chat_date_label {
+    color: ${muted_foreground};
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0px 8px;
+}
+
+QLabel#chat_msg_avatar {
+    border-radius: 18px;
+}
+
+QWidget#chat_msg_bubble_me {
+    background-color: ${input};
+    border: 1px solid ${ring};
+    border-radius: 5px;
+}
+
+QWidget#chat_msg_bubble_other {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 5px;
+}
+
+QLabel#chat_msg_sender {
+    font-size: 12px;
+    font-weight: bold;
+    color: ${primary};
+}
+
+QLabel#chat_msg_sender_me {
+    font-size: 12px;
+    font-weight: bold;
+    color: ${primary};
+}
+
+QLabel#chat_msg_time {
+    font-size: 11px;
+    color: ${muted_foreground};
+}
+
+QLabel#chat_msg_content {
+    font-size: 13px;
+    color: ${foreground};
+}
+
+QLabel#chat_msg_image {
+    border-radius: 5px;
+}
+
+QLabel#chat_file_name {
+    font-size: 12px;
+    font-weight: bold;
+    color: ${foreground};
+    background-color: transparent;
+}
+
+QPushButton#chat_open_file_btn, QPushButton#chat_save_file_btn {
+    background-color: ${popover};
+    color: ${foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+QPushButton#chat_open_file_btn:hover, QPushButton#chat_save_file_btn:hover {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QMenu#chat_context_menu {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 4px;
+}
+
+QMenu#chat_context_menu::item {
+    color: ${foreground};
+}
+
+QMenu#chat_context_menu::item:selected {
+    background-color: ${destructive};
+    color: ${destructive_foreground};
+}
+
+
+/* Emoji Picker Popup */
+QFrame#emoji_picker_popup {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QFrame#emoji_picker_popup QLabel#popup_section_title {
+    font-size: 11px;
+    font-weight: bold;
+    padding-left: 2px;
+    color: ${muted_foreground};
+    background: transparent;
+}
+
+QFrame#emoji_picker_popup QScrollArea,
+QFrame#emoji_picker_popup QScrollArea * {
+    background: transparent;
+    border: none;
+}
+
+QFrame#emoji_picker_popup QPushButton {
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+QFrame#emoji_picker_popup QPushButton:hover {
+    background-color: ${popover};
+}
+
+QFrame#emoji_picker_popup QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 6px;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QFrame#emoji_picker_popup QScrollBar::handle:vertical {
+    background-color: ${border};
+    min-height: 20px;
+    border-radius: 3px;
+}
+
+QFrame#emoji_picker_popup QScrollBar::handle:vertical:hover {
+    background-color: ${primary};
+}
+
+/* Media Loading Placeholders & File Icons */
+QLabel#chat_media_placeholder,
+QLabel#chat_msg_image[is_placeholder="true"] {
+    color: ${muted_foreground};
+    background: ${card};
+    font-size: 12px;
+    font-style: italic;
+    padding: 6px;
+    border-radius: 4px;
+}
+
+QLabel#chat_file_type_icon {
+    font-size: 16px;
+    background-color: transparent;
+}

@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QDateTime>
+#include <QMap>
+#include <QList>
 #include <stdint.h>
 
 enum {
@@ -11,6 +13,7 @@ enum {
     WAITTING_EXIST_USER,
     SUCCESS = 200,
     ERROR = 400,
+    PASSWORD_REQUIRED = 401,
     FAILED = 500
 };
 
@@ -21,17 +24,65 @@ enum ASN1_EVENT{
     CLIENT_CHECK_ID,
     NEW_USER_CHALLENGE,
     NEW_USER_PROOF,
-    RESPONSE_USER_CHECK_ID,
+    CLAIM_ADMIN_PRIVILEGE,
     MEMBER_LIST,
-    MEMBER_IN_VOICE_ROOM_LIST,
-    MEMBER_DETAIL
+    MEMBER_DETAIL,
+    ROOM_LIST,
+    CREATE_ROOM,
+    JOIN_ROOM,
+    UPDATE_SERVER_SETTINGS,
+    LEAVE_ROOM,
+    FILE_UPLOAD_CHUNK,
+    FILE_DOWNLOAD_REQ,
+    FILE_DOWNLOAD_CHUNK,
+    HISTORY_REQ,
+    DELETE_MSG,
+    GET_MY_INFO,
+    MY_INFO,
+    AVATAR_UPLOAD_CHUNK,
+    GET_ROLES_REQ,
+    ROLE_LIST,
+    CREATE_ROLE,
+    UPDATE_ROLE_PERMS,
+    DELETE_ROLE,
+    GET_USER_ROLES_REQ,
+    USER_ROLES_LIST,
+    ASSIGN_USER_ROLES,
+    KICK_USER,
+    UPDATE_ROOM,
+    POKE_USER,
+    GET_MEMBERS_REQ,
+    GET_MEMBER_DETAIL_REQ
+};
+
+enum ASN1_RESPONE_EVENT{
+    RESPONSE_USER_CHECK_ID = 0,
+    RESPONSE_USER_CLAIM_ADMIN_PRIVILEGE,
+    RESPONSE_CREATE_ROOM,
+    RESPONSE_JOIN_ROOM,
+    RESPONSE_UPDATE_SERVER_SETTINGS,
+    RESPONSE_FILE_UPLOAD,
+    RESPONSE_HISTORY,
+    RESPONSE_DELETE_MSG,
+    RESPONSE_AVATAR_UPLOAD,
+    RESPONSE_CREATE_ROLE,
+    RESPONSE_UPDATE_ROLE_PERMS,
+    RESPONSE_DELETE_ROLE,
+    RESPONSE_ASSIGN_USER_ROLES,
+    RESPONSE_KICK_USER,
+    RESPONSE_UPDATE_ROOM,
+    RESPONSE_KICKED,
+    RESPONSE_PERMS_UPDATED,
+    RESPONSE_POKE_USER,
+    RESPONSE_POKED,
+    RESPONSE_CHAT
 };
 
 enum MESSAGE_TYPE{
-    TEXT = 0,
-    IMAGE,
-    VIDEO,
-    OTHER
+    TEXT = 1,
+    IMAGE = 2,
+    VIDEO = 3,
+    OTHER = 4
 };
 
 enum USER_STATUS{
@@ -40,19 +91,104 @@ enum USER_STATUS{
     AWAY
 };
 
-typedef struct {
-    uint64_t id;
+struct chat_message_t {
+    uint64_t id = 0;
+    uint64_t room_id = 0;
+    uint64_t sender_id = 0;
     QString sender;
+    QString sender_avatar;
     QString msg;
+    uint16_t msg_type = MESSAGE_TYPE::TEXT;
     QDateTime timestamp;
-} chat_message_t;
+};
 
-typedef struct {
-    uint64_t uptime;
-} system_status_t;
+struct system_status_t {
+    uint64_t uptime = 0;
+};
 
-typedef struct {
-    uint64_t status;
-} respone_t;
+struct respone_t {
+    uint64_t status = 0;
+};
+
+struct voice_user_t {
+    uint64_t id = 0;
+    QString name;
+    QString avatar;
+    bool is_mute = false;
+    bool is_deaf = false;
+};
+
+struct room_t {
+    uint64_t id = 0;
+    QString name;
+    bool has_password = false;
+    uint32_t needed_voice_join_power = 0;
+    uint32_t needed_chat_join_power = 0;
+    uint32_t needed_speak_power = 0;
+    QList<voice_user_t> users;
+};
+
+struct user_info_t {
+    uint64_t id = 0;
+    QString uuid;
+    QString name;
+    QString avatar;
+    uint64_t created_at = 0;
+    uint64_t server_uptime = 0;
+    bool is_admin = false;
+    QStringList roles;
+};
+
+struct member_item_t {
+    uint64_t id = 0;
+    QString name;
+    QString avatar;
+    bool is_online = false;
+    bool is_admin = false;
+};
+
+struct role_t {
+    uint64_t id = 0;
+    QString name;
+    QMap<QString, int> permissions;
+};
+
+struct user_role_item_t {
+    uint64_t id = 0;
+    QString name;
+    bool assigned = false;
+};
+
+enum VOICE_PACKET_TYPE {
+    VOICE_PING = 1,
+    VOICE_DATA = 2,
+    VOICE_LEAVE = 3,
+    VOICE_STATE = 4
+};
+
+#pragma pack(push, 1)
+struct voice_packet_header_t {
+    uint32_t magic = 0x4543484F; // 'ECHO'
+    uint8_t packet_type = 0;      // VOICE_PACKET_TYPE
+    uint64_t user_id = 0;
+    uint64_t room_id = 0;
+    uint32_t seq = 0;
+    uint8_t is_mute = 0;
+    uint8_t is_deaf = 0;
+    uint16_t payload_size = 0;
+};
+#pragma pack(pop)
+
+#include <QCollator>
+
+inline bool natural_sort_less_than(const QString &s1, const QString &s2) {
+    static QCollator collator;
+    static bool init = []() {
+        collator.setNumericMode(true);
+        collator.setCaseSensitivity(Qt::CaseInsensitive);
+        return true;
+    }();
+    return collator.compare(s1, s2) < 0;
+}
 
 #endif // TYPES_H

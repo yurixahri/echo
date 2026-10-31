@@ -3,3 +3,233 @@
     background-color: ${background};
     font-size: 16px;
 }
+
+/* Global Modern Scrollbars */
+QScrollBar:vertical {
+    border: none;
+    background: transparent;
+    width: 6px;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: ${border};
+    min-height: 24px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: ${primary};
+}
+
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical {
+    border: none;
+    background: transparent;
+    height: 0px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background-color: transparent;
+    height: 6px;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: ${border};
+    min-width: 24px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: ${primary};
+}
+
+QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal {
+    border: none;
+    background: transparent;
+    width: 0px;
+}
+
+QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: transparent;
+}
+
+/* Global Modern Context Menus (including QLineEdit and text inputs) */
+QMenu {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item {
+    background-color: transparent;
+    padding: 6px 12px;
+    color: ${foreground};
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item:disabled {
+    color: ${muted_foreground};
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: ${border};
+    margin: 4px 6px;
+}
+
+/* Global Combobox Styling */
+QComboBox {
+    background-color: ${input};
+    color: ${foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+QComboBox:hover {
+    border-color: ${primary};
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: ${card};
+    color: ${foreground};
+    selection-background-color: ${primary};
+    selection-color: ${primary_foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 3px;
+    outline: 0px;
+}
+
+QComboBox QAbstractItemView::item {
+    background-color: transparent;
+    color: ${foreground};
+    min-height: 24px;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+QComboBox QAbstractItemView::item:selected,
+QComboBox QAbstractItemView::item:hover {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+
+/* Toast Notifications */
+QWidget#toast_container {
+    background: transparent;
+    border: none;
+}
+
+QWidget#toast_card,
+QWidget#toast_card_info,
+QWidget#toast_card_success,
+QWidget#toast_card_error {
+    background-color: ${popover};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QWidget#toast_card[toast_type="error"],
+QWidget#toast_card_error {
+    border: 1px solid ${destructive};
+}
+
+QWidget#toast_card[toast_type="success"],
+QWidget#toast_card_success {
+    border: 1px solid ${primary};
+}
+
+QWidget#toast_card QLabel,
+QWidget#toast_card_info QLabel,
+QWidget#toast_card_success QLabel,
+QWidget#toast_card_error QLabel {
+    background: transparent;
+    color: ${foreground};
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QWidget#toast_card[toast_type="error"] QLabel,
+QWidget#toast_card_error QLabel {
+    color: ${destructive};
+}
+
+QWidget#toast_card[toast_type="success"] QLabel,
+QWidget#toast_card_success QLabel {
+    color: ${primary};
+}
+
+QLabel#toast_icon {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* Global Checkbox Styling */
+QCheckBox {
+    color: ${foreground};
+    background-color: transparent;
+    font-size: 13px;
+    spacing: 8px;
+    padding: 2px;
+}
+
+QCheckBox:disabled {
+    color: ${muted_foreground};
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid ${border};
+    border-radius: 3px;
+    background-color: ${card};
+}
+
+QCheckBox::indicator:hover {
+    border-color: ${primary};
+}
+
+QCheckBox::indicator:checked {
+    background-color: ${primary};
+    border-color: ${primary};
+}

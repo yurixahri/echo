@@ -1,0 +1,25 @@
+QPushButton {
+    width: 40px;
+    height: 30px; 
+    background: transparent;
+    color: ${foreground};
+    border: none;
+    padding: 0px;
+}
+
+QPushButton:hover, QPushButton:pressed {
+    background-color: ${muted_foreground};
+}
+
+QPushButton#close:hover, QPushButton#close:pressed {
+    background-color: ${close};
+}
+
+QPushButton:focus {
+    outline: 1px dashed ${foreground}; 
+}
+
+QLabel {
+    color: ${foreground};
+    padding-left: 5px;
+}

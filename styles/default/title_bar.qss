@@ -7,12 +7,16 @@ QPushButton {
     padding: 0px;
 }
 
-QPushButton:hover, QPushButton:pressed, QPushButton:focus {
+QPushButton:hover, QPushButton:pressed {
     background-color: ${muted_foreground};
 }
 
-QPushButton#close:hover, QPushButton#close:pressed, QPushButton#close:focus {
+QPushButton#close:hover, QPushButton#close:pressed {
     background-color: ${close};
+}
+
+QPushButton:focus {
+    outline: 1px dashed ${foreground}; 
 }
 
 QLabel {

@@ -1,4 +1,166 @@
+*{
+    background-color: transparent;
+}
+
 QWidget#main_area {
     background-color: ${muted};
     border-radius: 5px;
+}
+
+QWidget#server_header {
+    border-bottom: 1px solid ${border};
+    background-color: transparent;
+}
+
+QLabel#server_name_title {
+    font-size: 16px;
+    font-weight: bold;
+    color: ${foreground};
+}
+
+QPushButton#server_menu_btn {
+    border: 1px solid ${border};
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    color: ${foreground};
+}
+
+QPushButton#server_menu_btn:hover {
+    background-color: ${input};
+}
+
+QMenu, QMenu#server_context_menu, QMenu#room_context_menu, QMenu#room_user_context_menu {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item, QMenu#server_context_menu::item, QMenu#room_context_menu::item, QMenu#room_user_context_menu::item {
+    background-color: transparent;
+    padding: 6px 12px;
+    color: ${foreground};
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item:selected, QMenu#server_context_menu::item:selected, QMenu#room_context_menu::item:selected, QMenu#room_user_context_menu::item:selected {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QMenu::separator, QMenu#server_context_menu::separator {
+    height: 1px;
+    background-color: ${border};
+    margin: 4px 6px;
+}
+
+QScrollArea#room_scroll_area {
+    border: none;
+}
+
+QWidget#room_header_row {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 5px;
+}
+
+QLabel#room_card_name {
+    font-size: 14px;
+    font-weight: bold;
+    color: ${foreground};
+}
+
+QLabel#room_card_users {
+    font-size: 12px;
+    color: ${muted_foreground};
+}
+
+QLabel#empty_rooms_label {
+    color: ${muted_foreground};
+    font-size: 14px;
+    margin-top: 30px;
+}
+
+QLabel#user_card_name {
+    font-size: 13px;
+    color: ${foreground};
+}
+
+QPushButton#room_action_btn, QPushButton#room_call_btn {
+    border: none;
+    border-radius: 4px;
+    padding: 3px;
+    background-color: transparent;
+}
+
+QPushButton#room_action_btn:hover, QPushButton#room_call_btn:hover {
+    background-color: ${input};
+}
+
+QLabel#user_avatar_label {
+    border: 1px solid ${border};
+    border-radius: 18px;
+    background-color: transparent;
+}
+
+QLabel#user_avatar_label_speaking {
+    border: 2px solid ${primary};
+    border-radius: 18px;
+    background-color: transparent;
+}
+
+
+/* Toast Notifications */
+QWidget#toast_container {
+    background: transparent;
+    border: none;
+}
+
+QWidget#toast_card,
+QWidget#toast_card_info,
+QWidget#toast_card_success,
+QWidget#toast_card_error {
+    background-color: ${popover};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QWidget#toast_card[toast_type="error"],
+QWidget#toast_card_error {
+    border: 1px solid ${destructive};
+}
+
+QWidget#toast_card[toast_type="success"],
+QWidget#toast_card_success {
+    border: 1px solid ${primary};
+}
+
+QWidget#toast_card QLabel,
+QWidget#toast_card_info QLabel,
+QWidget#toast_card_success QLabel,
+QWidget#toast_card_error QLabel {
+    background: transparent;
+    color: ${foreground};
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QWidget#toast_card[toast_type="error"] QLabel,
+QWidget#toast_card_error QLabel {
+    color: ${destructive};
+}
+
+QWidget#toast_card[toast_type="success"] QLabel,
+QWidget#toast_card_success QLabel {
+    color: ${primary};
+}
+
+QLabel#toast_icon {
+    font-size: 14px;
+    font-weight: bold;
 }

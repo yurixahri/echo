@@ -1,6 +1,6 @@
 *{
     color: ${foreground};
-    background-color: transparent
+    background-color: transparent;
 }
 
 QPushButton {
@@ -8,16 +8,88 @@ QPushButton {
     padding: 0px;
 }
 
-QWidget#QCollapseWidget{
+QWidget#QCollapseWidget {
     background-color: ${popover};
+    border-radius: 4px;
+}
+
+QWidget#QCollapseWidget #title {
+    margin-bottom: 2px;
+}
+
+QPushButton#server_item {
+    text-align: left;
+    padding: 3px 6px;
     border-radius: 3px;
 }
-QWidget#QCollapseWidget #title{
-    margin-bottom: 2px;
+
+QPushButton#server_item:hover {
+    background-color: ${input};
+}
+
+QPushButton#delete_server {
+    border-radius: 2px;
+}
+
+QPushButton#delete_server:hover {
+    background-color: ${input};
 }
 
 QLineEdit {
     background-color: ${input};
     border: 2px solid ${ring};
-    border-radius: 10px;
+    border-radius: 5px;
+    padding: 2px 6px;
+    color: ${foreground};
+}
+
+QPushButton#sidebar_settings_btn {
+    border: 1px solid ${border};
+    border-radius: 5px;
+    background-color: ${card};
+    padding: 4px;
+}
+
+QPushButton#sidebar_settings_btn:hover {
+    background-color: ${input};
+    border-color: ${ring};
+}
+
+QWidget#voice_panel {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QLabel#voice_room_lbl {
+    font-size: 12px;
+    font-weight: bold;
+    color: ${primary};
+    background-color: transparent;
+}
+
+QPushButton#voice_ctrl_btn {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px;
+}
+
+QPushButton#voice_ctrl_btn:hover {
+    background-color: ${popover};
+    border-color: ${ring};
+}
+
+QPushButton#voice_dc_btn {
+    background-color: ${destructive};
+    color: ${destructive_foreground};
+    border: none;
+    border-radius: 4px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+QPushButton#voice_dc_btn:hover {
+    opacity: 0.9;
 }

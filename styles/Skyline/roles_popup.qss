@@ -1,0 +1,486 @@
+*{
+    outline: transparent;
+    color: ${foreground};
+    font-size: 13px;
+}
+
+QWidget#popup_panel {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 8px;
+}
+
+QLabel#popup_title, QLabel#roles_title {
+    font-weight: bold;
+    font-size: 16px;
+    color: ${primary};
+    background: transparent;
+}
+
+QLabel#popup_err_title {
+    font-weight: bold;
+    font-size: 16px;
+    color: ${destructive};
+    background: transparent;
+}
+
+QLabel#popup_err_lbl {
+    font-size: 12px;
+    color: ${destructive};
+    background: transparent;
+}
+
+QLabel#popup_section_title {
+    font-size: 14px;
+    font-weight: bold;
+    color: ${foreground};
+    background: transparent;
+}
+
+QLabel#popup_muted_lbl, QLabel#popup_desc {
+    font-size: 12px;
+    color: ${muted_foreground};
+    background: transparent;
+}
+
+QLabel#my_info_avatar {
+    border: 2px solid ${border};
+    border-radius: 36px;
+    background-color: ${card};
+}
+
+QLineEdit {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: ${foreground};
+    font-size: 13px;
+}
+
+QLineEdit:focus {
+    border-color: ${ring};
+}
+
+QProgressBar {
+    background-color: ${input};
+    border: none;
+    border-radius: 2px;
+}
+
+QProgressBar::chunk {
+    background-color: ${primary};
+    border-radius: 2px;
+}
+
+QComboBox {
+    background-color: ${input};
+    color: ${foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+}
+
+QComboBox:hover {
+    border-color: ${primary};
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 20px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: ${card};
+    color: ${foreground};
+    selection-background-color: ${primary};
+    selection-color: ${primary_foreground};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 3px;
+    outline: 0px;
+}
+
+QComboBox QAbstractItemView::item {
+    background-color: transparent;
+    color: ${foreground};
+    min-height: 24px;
+    padding: 4px 8px;
+    border-radius: 3px;
+}
+
+QComboBox QAbstractItemView::item:selected,
+QComboBox QAbstractItemView::item:hover {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QCheckBox {
+    color: ${foreground};
+    background-color: transparent;
+    font-size: 13px;
+    spacing: 8px;
+    padding: 2px;
+}
+
+QCheckBox:disabled {
+    color: ${muted_foreground};
+}
+
+QCheckBox::indicator {
+    width: 16px;
+    height: 16px;
+    border: 1px solid ${border};
+    border-radius: 3px;
+    background-color: ${card};
+}
+
+QCheckBox::indicator:hover {
+    border-color: ${primary};
+}
+
+QCheckBox::indicator:checked {
+    background-color: ${primary};
+    border-color: ${primary};
+}
+
+QSpinBox {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 3px;
+    color: ${foreground};
+    padding: 2px 4px;
+}
+
+QSpinBox:focus {
+    border-color: ${ring};
+}
+
+QSlider::groove:horizontal {
+    border: none;
+    height: 4px;
+    background: ${input};
+    border-radius: 2px;
+}
+
+QSlider::sub-page:horizontal {
+    background: ${primary};
+    border-radius: 2px;
+}
+
+QSlider::handle:horizontal {
+    background: ${primary};
+    width: 14px;
+    margin: -5px 0;
+    border-radius: 7px;
+}
+
+QSlider::handle:horizontal:hover {
+    background: ${ring};
+}
+
+QFrame#settings_vsep {
+    background-color: ${border};
+    max-width: 1px;
+}
+
+/* Button variants */
+QPushButton#popup_primary_btn, QPushButton#role_create_btn, QPushButton#role_save_perms_btn {
+    background-color: ${primary};
+    color: ${primary_foreground};
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    padding: 4px 14px;
+    font-size: 13px;
+}
+
+QPushButton#popup_primary_btn:hover, QPushButton#role_create_btn:hover, QPushButton#role_save_perms_btn:hover {
+    background-color: ${ring};
+}
+
+QPushButton#popup_secondary_btn {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 10px;
+    color: ${foreground};
+    font-size: 12px;
+}
+
+QPushButton#popup_secondary_btn:hover {
+    background-color: ${popover};
+    border-color: ${ring};
+}
+
+QPushButton#settings_nav_btn {
+    text-align: center;
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    background-color: ${input};
+    color: ${foreground};
+}
+
+QPushButton#settings_nav_btn:hover {
+    background-color: ${popover};
+    border-color: ${ring};
+}
+
+QPushButton#settings_nav_btn:checked {
+    background-color: ${primary};
+    color: ${primary_foreground};
+    font-weight: bold;
+    border-color: ${primary};
+}
+
+QPushButton#popup_close_btn, QPushButton {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 4px;
+    padding: 4px 12px;
+    color: ${foreground};
+    font-size: 13px;
+}
+
+QPushButton:hover {
+    background-color: ${popover};
+    border-color: ${ring};
+}
+
+QPushButton:focus {
+    outline: none;
+}
+
+/* Roles specific cards and controls */
+QWidget#role_card {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 5px;
+}
+
+QLabel#role_name_lbl {
+    font-weight: bold;
+    font-size: 14px;
+    color: ${foreground};
+    background-color: transparent;
+}
+
+QPushButton#role_toggle_btn {
+    font-size: 11px;
+    padding: 2px 8px;
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 3px;
+    color: ${foreground};
+}
+
+QPushButton#role_toggle_btn:hover {
+    background-color: ${popover};
+}
+
+QPushButton#role_del_btn {
+    font-size: 11px;
+    padding: 2px 8px;
+    color: ${destructive};
+    background-color: transparent;
+    border: 1px solid ${destructive};
+    border-radius: 3px;
+}
+
+QPushButton#role_del_btn:hover {
+    background-color: ${destructive};
+    color: ${destructive_foreground};
+}
+
+QWidget#role_editor_panel {
+    background-color: transparent;
+    border-top: 1px solid ${border};
+}
+
+QLabel#role_section_title {
+    font-size: 12px;
+    font-weight: bold;
+    color: ${muted_foreground};
+    background-color: transparent;
+}
+
+QScrollArea {
+    background: transparent;
+    background-color: transparent;
+    border: none;
+}
+
+QScrollArea > QWidget > QWidget {
+    background: transparent;
+    background-color: transparent;
+}
+
+QScrollArea#popup_scroll_area {
+    background-color: ${input};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QScrollArea#popup_scroll_area > QWidget > QWidget {
+    background: transparent;
+    background-color: transparent;
+}
+
+QScrollArea#roles_scroll_area {
+    background: transparent;
+    background-color: transparent;
+    border: none;
+}
+
+QScrollArea#roles_scroll_area > QWidget > QWidget {
+    background: transparent;
+    background-color: transparent;
+}
+
+/* Modern Scrollbars */
+QScrollBar:vertical {
+    border: none;
+    background-color: transparent;
+    width: 6px;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical {
+    background-color: ${border};
+    min-height: 24px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: ${primary};
+}
+
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical {
+    border: none;
+    background: transparent;
+    height: 0px;
+}
+
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: transparent;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background-color: transparent;
+    height: 6px;
+    margin: 0px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: ${border};
+    min-width: 24px;
+    border-radius: 3px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background-color: ${primary};
+}
+
+QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal {
+    border: none;
+    background: transparent;
+    width: 0px;
+}
+
+QScrollBar::left-arrow:horizontal, QScrollBar::right-arrow:horizontal {
+    background: transparent;
+    width: 0px;
+    height: 0px;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: transparent;
+}
+
+
+/* Context Menus inside Popups */
+QMenu {
+    background-color: ${card};
+    border: 1px solid ${border};
+    border-radius: 6px;
+    padding: 6px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item {
+    background-color: transparent;
+    padding: 6px 12px;
+    color: ${foreground};
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: normal;
+}
+
+QMenu::item:disabled {
+    color: ${muted_foreground};
+    background-color: transparent;
+}
+
+QMenu::item:selected {
+    background-color: ${primary};
+    color: ${primary_foreground};
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: ${border};
+    margin: 4px 6px;
+}
+
+/* User Profile & Member List Elements */
+QLabel#user_profile_admin_badge {
+    color: ${primary};
+    font-weight: bold;
+    font-size: 12px;
+}
+
+QLabel#user_profile_role_pill {
+    background-color: ${card};
+    color: ${foreground};
+    border: 1px solid ${border};
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+QLabel#member_status_online {
+    color: ${primary};
+    font-size: 11px;
+}
+
+QLabel#member_status_offline {
+    color: ${muted_foreground};
+    font-size: 11px;
+}
+
+/* Settings Popup Elements */
+QScrollArea#settings_page_scroll,
+QScrollArea#settings_page_scroll > QWidget > QWidget,
+QWidget#settings_page_content {
+    background: transparent;
+    border: none;
+}
+
+QLabel#purge_status_lbl {
+    color: ${primary};
+    font-size: 11px;
+}

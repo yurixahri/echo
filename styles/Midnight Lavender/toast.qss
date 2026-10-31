@@ -1,0 +1,48 @@
+QWidget#toast_container {
+    background: transparent;
+    border: none;
+}
+
+QWidget#toast_card,
+QWidget#toast_card_info,
+QWidget#toast_card_success,
+QWidget#toast_card_error {
+    background-color: ${popover};
+    border: 1px solid ${border};
+    border-radius: 6px;
+}
+
+QWidget#toast_card_error,
+QWidget#toast_card[toast_type="error"] {
+    border: 1px solid ${destructive};
+}
+
+QWidget#toast_card_success,
+QWidget#toast_card[toast_type="success"] {
+    border: 1px solid ${primary};
+}
+
+QWidget#toast_card QLabel,
+QWidget#toast_card_info QLabel,
+QWidget#toast_card_success QLabel,
+QWidget#toast_card_error QLabel {
+    background: transparent;
+    color: ${foreground};
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QWidget#toast_card_error QLabel,
+QWidget#toast_card[toast_type="error"] QLabel {
+    color: ${destructive};
+}
+
+QWidget#toast_card_success QLabel,
+QWidget#toast_card[toast_type="success"] QLabel {
+    color: ${primary};
+}
+
+QLabel#toast_icon {
+    font-size: 14px;
+    font-weight: bold;
+}

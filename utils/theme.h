@@ -5,7 +5,13 @@
 #include <QSettings>
 #include <QSvgRenderer>
 #include <QPainter>
+#include <QPainterPath>
 #include <QFile>
+#include <QDir>
+#include <QCoreApplication>
+#include <QComboBox>
+#include <QStyledItemDelegate>
+#include <functional>
 
 struct theme {
     QString background                 = "#1E1A21";
@@ -39,6 +45,63 @@ struct theme {
 };
 
 extern struct theme global_theme;
+extern QString theme_path;
+inline std::function<void(const QString &new_theme)> on_theme_changed = nullptr;
+
+inline QStringList get_available_themes() {
+    QString styles_dir = QCoreApplication::applicationDirPath() + "/styles";
+    QDir dir(styles_dir);
+    QStringList themes = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    if (!themes.contains("default")) {
+        themes.prepend("default");
+    }
+    return themes;
+}
+
+inline QString get_combobox_qss() {
+    return QString(
+        "QComboBox {"
+        "  background-color: %1;"
+        "  color: %2;"
+        "  border: 1px solid %3;"
+        "  border-radius: 4px;"
+        "  padding: 4px 8px;"
+        "  font-size: 13px;"
+        "}"
+        "QComboBox:hover { border-color: %4; }"
+        "QComboBox::drop-down { border: none; width: 20px; }"
+        "QComboBox QAbstractItemView {"
+        "  background-color: %5;"
+        "  color: %2;"
+        "  selection-background-color: %4;"
+        "  selection-color: %6;"
+        "  border: 1px solid %3;"
+        "  border-radius: 4px;"
+        "  padding: 3px;"
+        "  outline: 0px;"
+        "}"
+        "QComboBox QAbstractItemView::item {"
+        "  background-color: transparent;"
+        "  color: %2;"
+        "  min-height: 24px;"
+        "  padding: 4px 8px;"
+        "  border-radius: 3px;"
+        "}"
+        "QComboBox QAbstractItemView::item:selected, QComboBox QAbstractItemView::item:hover {"
+        "  background-color: %4;"
+        "  color: %6;"
+        "}"
+    ).arg(global_theme.input, global_theme.foreground, global_theme.border,
+          global_theme.primary, global_theme.card, global_theme.primary_foreground);
+}
+
+inline void style_combobox(QComboBox *combo) {
+    if (!combo) return;
+    if (!combo->itemDelegate() || combo->itemDelegate()->metaObject()->className() == QString("QItemDelegate")) {
+        combo->setItemDelegate(new QStyledItemDelegate(combo));
+    }
+    combo->setStyleSheet(get_combobox_qss());
+}
 
 inline void load_theme(QString &path){
     QSettings global_values(QCoreApplication::applicationDirPath() + "/styles/"+path+"/global_values.ini", QSettings::IniFormat);
@@ -90,6 +153,18 @@ inline QString get_central_qss(QString &path){
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString qss = QString::fromUtf8(file.readAll());
         qss.replace("${background}", global_theme.background);
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${muted}", global_theme.muted);
+        qss.replace("${muted_foreground}", global_theme.muted_foreground);
+        qss.replace("${input}", global_theme.input);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${popover_foreground}", global_theme.popover_foreground);
+        qss.replace("${destructive}", global_theme.destructive);
+        qss.replace("${destructive_foreground}", global_theme.destructive_foreground);
         return qss;
     }else{
         return "";
@@ -104,6 +179,12 @@ inline QString get_side_bar_qss(QString &path){
         qss.replace("${popover}", global_theme.popover);
         qss.replace("${input}", global_theme.input);
         qss.replace("${ring}", global_theme.ring);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${destructive}", global_theme.destructive);
+        qss.replace("${destructive_foreground}", global_theme.destructive_foreground);
         return qss;
     }else{
         return "";
@@ -115,10 +196,161 @@ inline QString get_main_area_qss(QString &path){
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString qss = QString::fromUtf8(file.readAll());
         qss.replace("${muted}", global_theme.muted);
+        qss.replace("${muted_foreground}", global_theme.muted_foreground);
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${background}", global_theme.background);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${input}", global_theme.input);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${destructive}", global_theme.destructive);
+        qss.replace("${destructive_foreground}", global_theme.destructive_foreground);
         return qss;
     }else{
         return "";
     }
+}
+
+inline QString get_chat_area_qss(QString &path){
+    QFile file(QCoreApplication::applicationDirPath() + "/styles/"+path+"/chat_area.qss");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString qss = QString::fromUtf8(file.readAll());
+        qss.replace("${muted}", global_theme.muted);
+        qss.replace("${muted_foreground}", global_theme.muted_foreground);
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${background}", global_theme.background);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${input}", global_theme.input);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${ring}", global_theme.ring);
+        return qss;
+    }else{
+        return "";
+    }
+}
+
+inline QString get_popup_qss(QString &path){
+    QFile file(QCoreApplication::applicationDirPath() + "/styles/"+path+"/popup.qss");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString qss = QString::fromUtf8(file.readAll());
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${background}", global_theme.background);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${input}", global_theme.input);
+        qss.replace("${ring}", global_theme.ring);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${muted}", global_theme.muted);
+        qss.replace("${muted_foreground}", global_theme.muted_foreground);
+        qss.replace("${destructive}", global_theme.destructive);
+        qss.replace("${destructive_foreground}", global_theme.destructive_foreground);
+        return qss;
+    }else{
+        return "";
+    }
+}
+
+inline QString get_roles_popup_qss(const QString &path){
+    QFile file(QCoreApplication::applicationDirPath() + "/styles/"+path+"/roles_popup.qss");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString qss = QString::fromUtf8(file.readAll());
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${background}", global_theme.background);
+        qss.replace("${input}", global_theme.input);
+        qss.replace("${ring}", global_theme.ring);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${primary_foreground}", global_theme.primary_foreground);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${card}", global_theme.card);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${destructive}", global_theme.destructive);
+        qss.replace("${destructive_foreground}", global_theme.destructive_foreground);
+        qss.replace("${muted}", global_theme.muted);
+        qss.replace("${muted_foreground}", global_theme.muted_foreground);
+        return qss;
+    }
+    return "";
+}
+
+inline QString get_toast_qss(const QString &path){
+    QFile file(QCoreApplication::applicationDirPath() + "/styles/"+path+"/toast.qss");
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QString qss = QString::fromUtf8(file.readAll());
+        qss.replace("${foreground}", global_theme.foreground);
+        qss.replace("${popover}", global_theme.popover);
+        qss.replace("${border}", global_theme.border);
+        qss.replace("${primary}", global_theme.primary);
+        qss.replace("${destructive}", global_theme.destructive);
+        return qss;
+    }
+    return QString(
+        "QWidget#toast_container { background: transparent; border: none; }"
+        "QWidget#toast_card, QWidget#toast_card_info, QWidget#toast_card_success, QWidget#toast_card_error {"
+        "  background-color: %1; border: 1px solid %2; border-radius: 6px;"
+        "}"
+        "QWidget#toast_card_error, QWidget#toast_card[toast_type=\"error\"] { border: 1px solid %3; }"
+        "QWidget#toast_card_success, QWidget#toast_card[toast_type=\"success\"] { border: 1px solid %4; }"
+        "QWidget#toast_card QLabel, QWidget#toast_card_info QLabel, QWidget#toast_card_success QLabel, QWidget#toast_card_error QLabel {"
+        "  background: transparent; color: %5; font-size: 13px; font-weight: 500;"
+        "}"
+        "QWidget#toast_card_error QLabel, QWidget#toast_card[toast_type=\"error\"] QLabel { color: %3; }"
+        "QWidget#toast_card_success QLabel, QWidget#toast_card[toast_type=\"success\"] QLabel { color: %4; }"
+        "QLabel#toast_icon { font-size: 14px; font-weight: bold; }"
+    ).arg(global_theme.popover, global_theme.border, global_theme.destructive, global_theme.primary, global_theme.foreground);
+}
+
+inline QString get_emoji_picker_qss(const QString &path) {
+    Q_UNUSED(path);
+    return QString(
+        "QFrame#emoji_picker_popup {"
+        "  background-color: %1;"
+        "  border: 1px solid %2;"
+        "  border-radius: 6px;"
+        "}"
+        "QLabel#popup_section_title {"
+        "  font-size: 11px;"
+        "  font-weight: bold;"
+        "  padding-left: 2px;"
+        "  color: %3;"
+        "  background: transparent;"
+        "}"
+        "QScrollArea, QScrollArea > QWidget, QScrollArea > QWidget > QWidget {"
+        "  background: transparent;"
+        "  border: none;"
+        "}"
+        "QPushButton {"
+        "  background: transparent;"
+        "  border: none;"
+        "  border-radius: 4px;"
+        "  font-size: 16px;"
+        "}"
+        "QPushButton:hover {"
+        "  background-color: %4;"
+        "}"
+        "QScrollBar:vertical {"
+        "  border: none;"
+        "  background: transparent;"
+        "  width: 6px;"
+        "  margin: 0px;"
+        "  border-radius: 3px;"
+        "}"
+        "QScrollBar::handle:vertical {"
+        "  background-color: %2;"
+        "  min-height: 20px;"
+        "  border-radius: 3px;"
+        "}"
+        "QScrollBar::handle:vertical:hover {"
+        "  background-color: %5;"
+        "}"
+    ).arg(global_theme.card, global_theme.border, global_theme.muted_foreground,
+          global_theme.popover, global_theme.primary);
 }
 
 inline QPixmap colored_svg(const QString &path, const QColor &color, const QSize &size){
@@ -148,6 +380,35 @@ inline QPixmap colored_png(const QString &path, const QColor &color, const QSize
     painter.fillRect(pixmap.rect(), color);
 
     return pixmap;
+}
+
+inline QPixmap crop_avatar_cover(const QPixmap &src, const QSize &target_size, int radius = 0){
+    if (src.isNull() || target_size.isEmpty()) return {};
+
+    QPixmap scaled_pix = src.scaled(target_size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation);
+
+    int crop_x = qMax(0, (scaled_pix.width() - target_size.width()) / 2);
+    int crop_y = qMax(0, (scaled_pix.height() - target_size.height()) / 2);
+    QPixmap cropped = scaled_pix.copy(crop_x, crop_y, target_size.width(), target_size.height());
+
+    if (radius <= 0) return cropped;
+
+    QPixmap result(target_size);
+    result.fill(Qt::transparent);
+
+    QPainter painter(&result);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+
+    QPainterPath path;
+    if (radius >= target_size.width() / 2 && radius >= target_size.height() / 2) {
+        path.addEllipse(0, 0, target_size.width(), target_size.height());
+    } else {
+        path.addRoundedRect(0, 0, target_size.width(), target_size.height(), radius, radius);
+    }
+    painter.setClipPath(path);
+    painter.drawPixmap(0, 0, cropped);
+    return result;
 }
 
 #endif // THEME_H
