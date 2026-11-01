@@ -2,7 +2,14 @@ QT += core gui widgets svg network multimedia
 
 CONFIG += c++20
 TARGET = Echo
+VERSION = 1.0.1
+
+QMAKE_TARGET_PRODUCT = "Echo"
+QMAKE_TARGET_DESCRIPTION = "Echo Voice & Chat Client"
+QMAKE_TARGET_COPYRIGHT = "GNU General Public License v3.0"
+
 win32: RC_ICONS = assets/icons/logo_small.ico
+DEFINES += ECHO_VERSION=\\\"$$VERSION\\\"
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -48,6 +55,7 @@ SOURCES += \
 
 HEADERS += \
     common/types.h \
+    common/version.h \
     utils/asn1_parser.h \
     utils/config.h \
     utils/markdown_helper.h \

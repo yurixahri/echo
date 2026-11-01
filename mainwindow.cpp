@@ -128,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
         if (room_container) {
             update_room_view(room_container, {});
         }
-        show_error_popup(main_panel, err);
+        show_toast(main_panel, err, "error");
     };
 
     on_disconnected = [this]() {
@@ -230,7 +230,7 @@ MainWindow::MainWindow(QWidget *parent)
     };
 
     on_chat_message_received = [this](const chat_message_t &msg) {
-        if (chat_area_enqueue_message(chat_area, msg) && msg.sender_id != client.user_id) {
+        if (chat_area_enqueue_message(chat_area, msg)) {
             sound_play_message();
         }
     };

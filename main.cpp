@@ -9,6 +9,7 @@
 #include "functions/file.h"
 #include "functions/role.h"
 #include "common/types.h"
+#include "common/version.h"
 
 class GlobalFocusClearer : public QObject {
 protected:
@@ -48,6 +49,7 @@ int main(int argc, char *argv[]){
     QApplication a(argc, argv);
     a.setApplicationName("Echo");
     a.setApplicationDisplayName("Echo");
+    a.setApplicationVersion(ECHO_VERSION);
     a.setWindowIcon(QIcon(QCoreApplication::applicationDirPath() + "/assets/icons/logo_small.ico"));
 
     int ret;

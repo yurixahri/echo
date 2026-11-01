@@ -31,6 +31,7 @@
 #include "utils/asn1_parser.h"
 #include "utils/config.h"
 #include "functions/room.h"
+#include "functions/sound.h"
 
 struct voice_client_t {
     QAudioSource *audio_source = nullptr;
@@ -196,7 +197,7 @@ constexpr int VOICE_AUDIO_FRAME_DURATION_MS = 10;
 constexpr int VOICE_AUDIO_FRAME_SAMPLES =
     VOICE_AUDIO_SAMPLE_RATE * VOICE_AUDIO_FRAME_DURATION_MS / 1000;
 constexpr int VOICE_AUDIO_FRAME_SIZE = VOICE_AUDIO_FRAME_SAMPLES * 2;
-constexpr int VOICE_AUDIO_BUFFER_SIZE = VOICE_AUDIO_FRAME_SIZE * 4;
+constexpr int VOICE_AUDIO_BUFFER_SIZE = VOICE_AUDIO_FRAME_SIZE * 20;
 
 inline void voice_handle_datagram(const QByteArray &data, uint64_t generation);
 inline void voice_udp_drain_pending();
@@ -699,7 +700,14 @@ inline void voice_start_audio_output() {
 inline void voice_play_audio_frame() {
     qint64 now = QDateTime::currentMSecsSinceEpoch();
     voice_update_local_speaker(false, now);
-    if (!voice_client.output_stream || voice_client.is_deaf || voice_mic_test_active) return;
+    if (voice_client.is_deaf || voice_mic_test_active || !voice_client.audio_sink) return;
+
+    if (voice_client.audio_sink->state() == QAudio::SuspendedState) {
+        voice_client.audio_sink->resume();
+    } else if (voice_client.audio_sink->state() == QAudio::StoppedState || !voice_client.output_stream || !voice_client.output_stream->isOpen()) {
+        voice_client.output_stream = voice_client.audio_sink->start();
+    }
+    if (!voice_client.output_stream) return;
 
     qint32 mixed_samples[VOICE_AUDIO_FRAME_SIZE / 2] = {};
     bool has_audio = false;
@@ -720,7 +728,7 @@ inline void voice_play_audio_frame() {
             continue;
         }
 
-        if (!peer.playback_started && peer.encoded_packets.size() < 2) {
+        if (!peer.playback_started && peer.encoded_packets.size() < 3) {
             ++it;
             continue;
         }
@@ -871,7 +879,7 @@ inline void voice_handle_datagram(const QByteArray &data, uint64_t generation) {
     peer.encoded_packets.enqueue(encoded_audio);
     peer.last_packet_at = now;
 
-    constexpr int max_queued_packets = 6;
+    constexpr int max_queued_packets = 25;
     while (peer.encoded_packets.size() > max_queued_packets) {
         peer.encoded_packets.dequeue();
     }
@@ -964,6 +972,7 @@ inline void voice_stop_channel_impl(bool notify_server) {
         voice_client.encoder = nullptr;
     }
 
+    sound_play_voice_leave();
     // qDebug() << "Voice channel closed for room:" << old_rid;
     voice_emit_state_changed(false, 0, "");
 }
@@ -1007,6 +1016,7 @@ inline void voice_finish_start_channel(
 
     // qDebug() << "Voice channel connected to room:" << room_id << room_name;
     voice_emit_state_changed(true, room_id, room_name);
+    sound_play_voice_join();
 }
 
 inline void voice_fail_start_channel(

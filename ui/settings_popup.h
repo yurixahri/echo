@@ -19,8 +19,21 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QProgressBar>
+#include <QFile>
+#include <QDir>
+#include <QProcess>
+#ifdef Q_OS_WIN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <shellapi.h>
+#endif
+#include "common/version.h"
 #include "functions/voice.h"
 #include "functions/sound.h"
 #include "ui/popup.h"
@@ -361,7 +374,7 @@ inline QWidget* create_about_settings_page() {
     title->setObjectName("popup_section_title");
     layout->addWidget(title);
 
-    QLabel *version_lbl = new QLabel("Version: 1.0.0");
+    QLabel *version_lbl = new QLabel(QString("Version: %1").arg(ECHO_VERSION));
     version_lbl->setObjectName("popup_muted_lbl");
     layout->addWidget(version_lbl);
 
@@ -393,34 +406,43 @@ inline QWidget* create_about_settings_page() {
     update_status->setObjectName("popup_muted_lbl");
     update_status->setWordWrap(true);
 
-    QPushButton *download_btn = new QPushButton("Download Latest Release");
-    download_btn->setObjectName("popup_primary_btn");
-    download_btn->setCursor(Qt::PointingHandCursor);
-    download_btn->setFixedHeight(30);
-    download_btn->hide();
+    QProgressBar *update_progress = new QProgressBar();
+    update_progress->setRange(0, 100);
+    update_progress->setValue(0);
+    update_progress->setFixedHeight(14);
+    update_progress->setTextVisible(true);
+    update_progress->hide();
 
-    QObject::connect(check_update_btn, &QPushButton::clicked, [page, check_update_btn, update_status, download_btn]() {
+    QPushButton *action_btn = new QPushButton("Install Update");
+    action_btn->setObjectName("popup_primary_btn");
+    action_btn->setCursor(Qt::PointingHandCursor);
+    action_btn->setFixedHeight(30);
+    action_btn->hide();
+
+    QObject::connect(check_update_btn, &QPushButton::clicked, [page, check_update_btn, update_status, update_progress, action_btn]() {
         check_update_btn->setEnabled(false);
         check_update_btn->setText("Checking...");
         update_status->setText("Connecting to GitHub...");
-        download_btn->hide();
+        update_progress->hide();
+        action_btn->hide();
 
         QNetworkAccessManager *nam = new QNetworkAccessManager(page);
         QNetworkRequest req(QUrl("https://api.github.com/repos/yurixahri/echo/releases/latest"));
         req.setHeader(QNetworkRequest::UserAgentHeader, "Echo-Client");
         req.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
 
+
         QNetworkReply *reply = nam->get(req);
-        QObject::connect(reply, &QNetworkReply::finished, [check_update_btn, update_status, download_btn, reply, nam]() {
+        QObject::connect(reply, &QNetworkReply::finished, [check_update_btn, update_status, action_btn, reply, nam]() {
             check_update_btn->setEnabled(true);
             check_update_btn->setText("Check for Updates");
 
             if (reply->error() != QNetworkReply::NoError) {
-                update_status->setText("No releases found or network error. You can visit the releases page:");
-                download_btn->setText("Open GitHub Releases Page");
-                download_btn->show();
-                download_btn->disconnect();
-                QObject::connect(download_btn, &QPushButton::clicked, []() {
+                update_status->setText("No releases found or network error. You can visit releases directly:");
+                action_btn->setText("Open GitHub Releases");
+                action_btn->show();
+                action_btn->disconnect(SIGNAL(clicked()));
+                QObject::connect(action_btn, &QPushButton::clicked, []() {
                     QDesktopServices::openUrl(QUrl("https://github.com/yurixahri/echo/releases"));
                 });
             } else {
@@ -431,22 +453,34 @@ inline QWidget* create_about_settings_page() {
                 QString html_url = obj.value("html_url").toString();
                 if (html_url.isEmpty()) html_url = "https://github.com/yurixahri/echo/releases";
 
-                QString current_version = "v1.0.0";
-                QString clean_tag = tag.startsWith("v") ? tag : ("v" + tag);
+                auto parse_ver = [](const QString &s) -> QList<int> {
+                    QString clean = s.startsWith('v', Qt::CaseInsensitive) ? s.mid(1) : s;
+                    QStringList parts = clean.split('.');
+                    QList<int> nums;
+                    for (const QString &p : parts) nums.append(p.toInt());
+                    while (nums.size() < 3) nums.append(0);
+                    return nums;
+                };
 
-                if (!tag.isEmpty() && clean_tag != current_version && clean_tag > current_version) {
+                QList<int> remote_v = parse_ver(tag);
+                QList<int> local_v = parse_ver(ECHO_VERSION);
+                bool is_newer = (remote_v > local_v);
+
+                if (!tag.isEmpty() && is_newer) {
                     update_status->setText("New version available: " + tag);
                     update_status->setStyleSheet("color: " + global_theme.primary + "; font-size: 11px;");
-                    download_btn->setText("Download " + tag);
-                    download_btn->show();
-                    download_btn->disconnect();
-                    QObject::connect(download_btn, &QPushButton::clicked, [html_url]() {
-                        QDesktopServices::openUrl(QUrl(html_url));
+
+                    action_btn->setText("Download " + tag);
+                    action_btn->show();
+                    action_btn->disconnect(SIGNAL(clicked()));
+
+                    QObject::connect(action_btn, &QPushButton::clicked, []() {
+                        QDesktopServices::openUrl(QUrl("https://github.com/yurixahri/echo/releases"));
                     });
                 } else {
-                    update_status->setText("You are using the latest version (v1.0.0).");
+                    update_status->setText(QString("You are using the latest version (%1).").arg(ECHO_VERSION));
                     update_status->setStyleSheet("color: " + global_theme.muted_foreground + "; font-size: 11px;");
-                    download_btn->hide();
+                    action_btn->hide();
                 }
             }
             reply->deleteLater();
@@ -456,7 +490,8 @@ inline QWidget* create_about_settings_page() {
 
     layout->addWidget(check_update_btn);
     layout->addWidget(update_status);
-    layout->addWidget(download_btn);
+    layout->addWidget(update_progress);
+    layout->addWidget(action_btn);
 
     layout->addStretch(1);
     return page;
