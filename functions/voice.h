@@ -700,14 +700,7 @@ inline void voice_start_audio_output() {
 inline void voice_play_audio_frame() {
     qint64 now = QDateTime::currentMSecsSinceEpoch();
     voice_update_local_speaker(false, now);
-    if (voice_client.is_deaf || voice_mic_test_active || !voice_client.audio_sink) return;
-
-    if (voice_client.audio_sink->state() == QAudio::SuspendedState) {
-        voice_client.audio_sink->resume();
-    } else if (voice_client.audio_sink->state() == QAudio::StoppedState || !voice_client.output_stream || !voice_client.output_stream->isOpen()) {
-        voice_client.output_stream = voice_client.audio_sink->start();
-    }
-    if (!voice_client.output_stream) return;
+    if (!voice_client.output_stream || voice_client.is_deaf || voice_mic_test_active) return;
 
     qint32 mixed_samples[VOICE_AUDIO_FRAME_SIZE / 2] = {};
     bool has_audio = false;
@@ -728,7 +721,7 @@ inline void voice_play_audio_frame() {
             continue;
         }
 
-        if (!peer.playback_started && peer.encoded_packets.size() < 3) {
+        if (!peer.playback_started && peer.encoded_packets.size() < 2) {
             ++it;
             continue;
         }
@@ -879,7 +872,7 @@ inline void voice_handle_datagram(const QByteArray &data, uint64_t generation) {
     peer.encoded_packets.enqueue(encoded_audio);
     peer.last_packet_at = now;
 
-    constexpr int max_queued_packets = 25;
+    constexpr int max_queued_packets = 6;
     while (peer.encoded_packets.size() > max_queued_packets) {
         peer.encoded_packets.dequeue();
     }

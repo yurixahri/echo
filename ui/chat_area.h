@@ -377,8 +377,8 @@ struct chat_area_t {
     bool is_loading_history = false;
     QList<chat_message_t> pending_history_batch;
     QString last_date_key;
-    QWidget *last_group_widget = nullptr;
-    QVBoxLayout *last_bubbles_layout = nullptr;
+    QPointer<QWidget> last_group_widget;
+    QPointer<QVBoxLayout> last_bubbles_layout;
     uint64_t last_group_sender_id = (uint64_t)-1;
     QList<QPointer<QLabel>> sliding_window_images;
     int last_scroll_val = 0;
@@ -1259,7 +1259,8 @@ inline void chat_area_add_message(chat_area_t &chat, uint64_t sender_id, const Q
     QWidget *bubble_row = create_chat_bubble_row(bubble, formatted_time, is_my_message);
 
     // Grouping
-    if (sender_id == chat.last_group_sender_id && chat.last_bubbles_layout != nullptr) {
+    if (sender_id == chat.last_group_sender_id &&
+        chat.last_group_widget && chat.last_bubbles_layout) {
         chat.last_bubbles_layout->addWidget(bubble_row);
     } else {
         QVBoxLayout *b_lay = nullptr;
@@ -1548,13 +1549,21 @@ inline void chat_area_remove_message(chat_area_t &chat, uint64_t msg_id) {
                 QWidget *bubbles_col = bubble_row->parentWidget();
                 bubble_row->deleteLater();
                 if (bubbles_col) {
-                    QTimer::singleShot(50, [bubbles_col]() {
-                        if (bubbles_col->findChildren<QWidget*>("chat_bubble_row").isEmpty()) {
-                            QWidget *group = bubbles_col->parentWidget();
-                            if (group && group->objectName() == "chat_group_widget") {
-                                group->deleteLater();
-                            }
+                    QPointer<QWidget> bubbles_col_ptr(bubbles_col);
+                    QPointer<QWidget> group_ptr(bubbles_col->parentWidget());
+                    QTimer::singleShot(50, chat.widget, [&chat, bubbles_col_ptr, group_ptr]() {
+                        if (!bubbles_col_ptr || !group_ptr ||
+                            !bubbles_col_ptr->findChildren<QWidget*>("chat_bubble_row").isEmpty() ||
+                            group_ptr->objectName() != "chat_group_widget") {
+                            return;
                         }
+
+                        if (chat.last_group_widget == group_ptr) {
+                            chat.last_group_widget.clear();
+                            chat.last_bubbles_layout.clear();
+                            chat.last_group_sender_id = (uint64_t)-1;
+                        }
+                        group_ptr->deleteLater();
                     });
                 }
             } else {
