@@ -2,7 +2,7 @@ QT += core gui widgets svg network multimedia
 
 CONFIG += c++20
 TARGET = Echo
-VERSION = 1.0.1
+VERSION = 1.0.2
 
 QMAKE_TARGET_PRODUCT = "Echo"
 QMAKE_TARGET_DESCRIPTION = "Echo Voice & Chat Client"
