@@ -8,6 +8,9 @@
   A lightweight, server-authoritative voice call & chat application built with C++20 and static Qt 6.
 </p>
 
+<img width="1458" height="988" alt="image" src="https://github.com/user-attachments/assets/79e616c5-a264-424e-b590-03370157ef14" />
+
+
 ---
 
 ## Why?
