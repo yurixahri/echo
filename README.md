@@ -86,6 +86,13 @@ Only support Windows for now.
 
 ---
 
+## Documentation
+
+- [Full API and protocol reference](docs/API_REFERENCE.md)
+- [Client architecture and file index](docs/FILES.md)
+
+---
+
 ## License
 
 This project is licensed under the [GNU General Public License v3.0](LICENSE).

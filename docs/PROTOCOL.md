@@ -1,9 +1,13 @@
 # Echo Protocol Specification
 
+> Full request/response field definitions, client behavior, and event diagrams
+> are maintained in [API_REFERENCE.md](API_REFERENCE.md). This page is a
+> protocol overview.
+
 ## 1. Network Transport Overview
 
 Communication uses two decoupled protocols:
-1. **Control & Chat Protocol (TCP):** ASN.1 DER-encoded messages over TCP (default port `5555`). Encrypted via TLS if SSL enabled.
+1. **Control & Chat Protocol (TCP):** ASN.1 DER-encoded messages over TCP (default port `5555`). The client can initiate TLS, but the bundled server accepts plain TCP; use a TLS-terminating proxy for encrypted deployments.
 2. **Voice Audio Protocol (UDP):** Low-latency binary packets over UDP on the same port (`5555`) with Opus-encoded audio.
 
 ---
@@ -59,7 +63,7 @@ Defined in `ChatProtocol.asn`. Messages are indexed by tag `[0]` through `[34]`:
 | `[27]` | `get-user-roles-req`| `GetUserRolesReq` | Client → Server | Requests assigned roles for a target user ID |
 | `[28]` | `user-roles-list` | `UserRolesList` | Server → Client | List of roles showing checked state for target user |
 | `[29]` | `assign-user-roles` | `AssignUserRoles` | Client → Server | Submits comma-separated list of roles for user |
-| `[30]` | `kick-user` | `KickUser` | Client → Server | Kicks target user from current room or server |
+| `[30]` | `kick-user` | `KickUser` | Client → Server | Removes target user from voice (current implementation) |
 | `[31]` | `update-room` | `UpdateRoom` | Client → Server | Updates room name, password, and power thresholds |
 | `[32]` | `poke-user` | `PokeUser` | Client → Server | Sends attention alert toast to target user |
 | `[33]` | `get-members-req` | `GetMembersReq` | Client → Server | Requests server member list |
@@ -69,7 +73,7 @@ Defined in `ChatProtocol.asn`. Messages are indexed by tag `[0]` through `[34]`:
 
 ## 4. Response Events (`ASN1_RESPONE_EVENT`)
 
-Returned inside `response` tag `[2]` with status (`SUCCESS = 0`, `FAILED = 1`, `PASSWORD_REQUIRED = 2`):
+Returned inside `response` tag `[2]` with status (`SUCCESS = 200`, `FAILED = 500`, `PASSWORD_REQUIRED = 401`; `ERROR = 400` is also defined):
 
 | Event ID | Enum Name | Description |
 |---|---|---|
@@ -80,7 +84,7 @@ Returned inside `response` tag `[2]` with status (`SUCCESS = 0`, `FAILED = 1`, `
 | 4 | `RESPONSE_UPDATE_SERVER_SETTINGS` | Result of updating server configuration |
 | 5 | `RESPONSE_FILE_UPLOAD` | File upload status |
 | 6 | `RESPONSE_HISTORY` | End of chat history paging batch |
-| 7 | `RESPONSE_DELETE_MSG` | Hard delete confirmation broadcast |
+| 7 | `RESPONSE_DELETE_MSG` | Delete error response; successful deletion is broadcast as `delete-msg` tag `[18]` |
 | 8 | `RESPONSE_AVATAR_UPLOAD` | Avatar upload completion status |
 | 9 | `RESPONSE_CREATE_ROLE` | Role creation status |
 | 10 | `RESPONSE_UPDATE_ROLE_PERMS` | Role permission update status |
@@ -105,18 +109,24 @@ Voice transmission operates via connectionless UDP datagrams.
 ```cpp
 #pragma pack(push, 1)
 struct voice_packet_header_t {
+    uint32_t magic;        // 0x4543484F ('ECHO')
     uint8_t packet_type;   // 1: PING, 2: DATA, 3: LEAVE, 4: STATE
-    uint64_t room_id;      // Target room ID
     uint64_t user_id;      // Sender user ID
-    uint32_t sequence;     // Packet sequence counter
-    uint64_t timestamp;    // Millisecond timestamp
+    uint64_t room_id;      // Target room ID
+    uint32_t seq;          // Packet sequence counter
+    uint8_t is_mute;
+    uint8_t is_deaf;
+    uint16_t payload_size; // Number of bytes following this header
 };
 #pragma pack(pop)
 ```
 
+The implementation copies this native packed struct directly without
+byte-order conversion; current supported Windows builds are little-endian.
+
 ### Packet Types
 
-- **`VOICE_PING` (1):** Keep-alive heartbeat sent every 2.5 seconds to maintain NAT port mapping.
+- **`VOICE_PING` (1):** Keep-alive heartbeat sent every 2 seconds.
 - **`VOICE_DATA` (2):** Audio payload. Header is followed immediately by Opus encoded byte stream.
 - **`VOICE_LEAVE` (3):** Sent when leaving channel to immediately flush client from routing table.
 - **`VOICE_STATE` (4):** Informs server/peers of mute/deaf state changes.
@@ -127,5 +137,5 @@ struct voice_packet_header_t {
 - **Sample Rate:** 48,000 Hz
 - **Channels:** 1 (Mono)
 - **Sample Format:** 16-bit signed integer PCM
-- **Frame Duration:** 20 ms (960 samples per frame)
+- **Frame Duration:** 10 ms (480 samples per frame)
 - **Bitrate:** Configurable 16–128 kbps (default: 40 kbps)

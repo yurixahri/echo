@@ -4,6 +4,9 @@
 
 Echo is a lightweight, server-authoritative voice and chat client built with C++20 and Qt 6.11 (static MinGW-w64). It avoids excessive class abstractions, favoring procedural, header-only modules where Qt subclassing is not strictly required.
 
+For the complete TCP/UDP API, wire fields, response events, and event diagrams,
+see [API_REFERENCE.md](API_REFERENCE.md).
+
 ---
 
 ## 2. Core Entry & Window Management
